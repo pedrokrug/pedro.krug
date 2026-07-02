@@ -63,10 +63,18 @@
   ]
 }
 </script>
-<!-- PROTOTYPE ONLY: production self-hosts woff2 files per Website_Brief.md -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Self-hosted fonts per Website_Brief.md — Clash Display (ITF Free Font License,
+     via Fontshare), Inter & JetBrains Mono (OFL, latin subset, variable weight) -->
+<link rel="preload" href="fonts/ClashDisplay-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/JetBrainsMono-var.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'Clash Display';src:url('fonts/ClashDisplay-500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Clash Display';src:url('fonts/ClashDisplay-600.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:'Clash Display';src:url('fonts/ClashDisplay-700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Inter';src:url('fonts/Inter-var.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'JetBrains Mono';src:url('fonts/JetBrainsMono-var.woff2') format('woff2');font-weight:100 800;font-style:normal;font-display:swap}
+</style>
 <style>
 /* ============================================================
    PEDRO KRUG — working file
@@ -173,7 +181,7 @@ section{padding:15vh 0 4vh}
 /* ---------- hero ---------- */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center}
 .hero h1{
-  font-family:'Space Grotesk',sans-serif;font-weight:700;
+  font-family:'Clash Display',sans-serif;font-weight:600;
   font-size:clamp(42px,6.8vw,110px);line-height:1.04;letter-spacing:-.03em;
   max-width:11em;
 }
@@ -195,7 +203,7 @@ section{padding:15vh 0 4vh}
 
 /* ---------- shared type ---------- */
 h2{
-  font-family:'Space Grotesk',sans-serif;font-weight:600;
+  font-family:'Clash Display',sans-serif;font-weight:600;
   font-size:clamp(34px,4.4vw,62px);letter-spacing:-.025em;line-height:1.06;
   max-width:14em;margin-bottom:30px;
 }
@@ -251,7 +259,7 @@ h2{
 /* the framework diagram */
 .fw-wrap{margin:0 0 26px}
 .fw{width:100%;height:auto;display:block}
-.fw .lbl{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:22px;fill:var(--ink);letter-spacing:-.02em}
+.fw .lbl{font-family:'Clash Display',sans-serif;font-weight:600;font-size:22px;fill:var(--ink);letter-spacing:-.02em}
 .fw .sub{font-family:'JetBrains Mono',monospace;font-size:10.5px;fill:var(--faint);letter-spacing:2.4px}
 .fw .wire{stroke:rgba(22,23,27,.22);stroke-width:2;fill:none}
 .fw .wire-soft{stroke:rgba(22,23,27,.13);stroke-width:1.6;fill:none}
@@ -289,7 +297,7 @@ h2{
 }
 .method-step:last-child{border-bottom:1px solid var(--hair)}
 .step-n{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.24em;color:var(--o-deep);padding-top:6px}
-.step-t{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(22px,2.2vw,30px);letter-spacing:-.02em}
+.step-t{font-family:'Clash Display',sans-serif;font-weight:600;font-size:clamp(22px,2.2vw,30px);letter-spacing:-.02em}
 .step-t small{display:block;font-family:'JetBrains Mono',monospace;font-weight:400;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint);margin-top:8px}
 .step-d{color:var(--muted);max-width:480px;font-size:16px}
 .method-step.loop-row .step-n{color:var(--g-deep)}
@@ -306,7 +314,7 @@ h2{
   transform-style:preserve-3d;will-change:transform;transition:transform .18s ease-out;
 }
 .front .k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;display:block}
-.front h3{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(20px,1.8vw,26px);letter-spacing:-.02em;margin-bottom:14px}
+.front h3{font-family:'Clash Display',sans-serif;font-weight:600;font-size:clamp(20px,1.8vw,26px);letter-spacing:-.02em;margin-bottom:14px}
 .front p{color:var(--muted);font-size:15.5px}
 .front .role{
   margin-top:22px;padding-top:18px;border-top:1px solid var(--hair);
