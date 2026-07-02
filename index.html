@@ -5,6 +5,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pedro Krug — Marca + Automatización + Datos</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="description" content="Consultoría de marca y tecnología en Valencia. Doy forma a cómo una marca se ve y suena, y me aseguro de que la tecnología que la sostiene juegue a su favor.">
+<link rel="canonical" href="https://www.pedrokrug.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.pedrokrug.com/">
+<meta property="og:title" content="Pedro Krug — Marca + Automatización + Datos">
+<meta property="og:description" content="La marca que ves. Los sistemas que la hacen funcionar. Consultoría de marca y tecnología en Valencia.">
+<meta property="og:image" content="https://www.pedrokrug.com/img/pedro-krug.jpg">
+<meta property="og:locale" content="es_ES">
+<meta property="og:locale:alternate" content="en_US">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.pedrokrug.com/#pedro",
+      "name": "Pedro Krug",
+      "url": "https://www.pedrokrug.com/",
+      "image": "https://www.pedrokrug.com/img/pedro-krug.jpg",
+      "jobTitle": "Brand & Technology Consultant",
+      "description": "Brand and technology consultant. Ten years building brands and the digital communication that sustains them — and the technology behind them: websites, systems, automation, AI.",
+      "email": "mailto:pedro@pedrokrug.com",
+      "telephone": "+34645061833",
+      "nationality": { "@type": "Country", "name": "Brazil" },
+      "birthPlace": { "@type": "Place", "name": "São Paulo, Brazil" },
+      "address": { "@type": "PostalAddress", "addressLocality": "Valencia", "addressCountry": "ES" },
+      "knowsLanguage": ["es", "en", "pt"],
+      "knowsAbout": ["Brand strategy", "Creative direction", "Digital communication", "Marketing", "UX/UI design", "Business automation", "Artificial intelligence", "CRM systems", "Web development direction"],
+      "sameAs": [
+        "https://www.linkedin.com/in/pedro-krug/",
+        "https://www.behance.net/pedrokrug"
+      ],
+      "worksFor": { "@id": "https://www.pedrokrug.com/#consultoria" }
+    },
+    {
+      "@type": "ProfessionalService",
+      "@id": "https://www.pedrokrug.com/#consultoria",
+      "name": "Pedro Krug — Consultoría de Marca y Tecnología",
+      "url": "https://www.pedrokrug.com/",
+      "founder": { "@id": "https://www.pedrokrug.com/#pedro" },
+      "description": "Consultoría de marca y crecimiento con dirección de sistemas, automatización e IA. El método: Estrategia → Identidad → Comunicación → Sistemas, y un circuito de datos que se cierra.",
+      "slogan": "La marca que ves. Los sistemas que la hacen funcionar.",
+      "areaServed": { "@type": "Country", "name": "Spain" },
+      "address": { "@type": "PostalAddress", "addressLocality": "Valencia", "addressCountry": "ES" },
+      "serviceType": ["Brand strategy and creative direction", "Marketing and communication direction", "Systems, automation and AI advisory"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.pedrokrug.com/#website",
+      "url": "https://www.pedrokrug.com/",
+      "name": "Pedro Krug",
+      "inLanguage": ["es", "en"],
+      "about": { "@id": "https://www.pedrokrug.com/#pedro" },
+      "publisher": { "@id": "https://www.pedrokrug.com/#pedro" }
+    }
+  ]
+}
+</script>
 <!-- PROTOTYPE ONLY: production self-hosts woff2 files per Website_Brief.md -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,6 +131,25 @@ body{
 }
 /* spine: gradient line growing with scroll */
 .spine{position:fixed;top:0;left:calc(var(--rail) - 1px);width:2px;height:0;background:var(--grad-v);z-index:11}
+
+/* language toggle */
+.lang-toggle{
+  position:fixed;top:22px;right:26px;z-index:20;
+  display:flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;
+  color:var(--faint);
+}
+.lang-toggle button{
+  background:none;border:0;padding:2px 0;cursor:pointer;
+  font-family:inherit;font-size:inherit;letter-spacing:inherit;
+  color:var(--faint);position:relative;transition:color .3s;
+}
+.lang-toggle button:hover{color:var(--ink)}
+.lang-toggle button.active{color:var(--ink)}
+.lang-toggle button.active::after{
+  content:"";position:absolute;left:0;bottom:-4px;height:2px;width:100%;background:var(--grad);
+}
+@media (max-width:900px){.lang-toggle{top:18px;right:18px}}
 
 /* the woven mark: dual fluency, interlaced */
 .mark-svg{width:27px;height:38px;display:block}
@@ -333,6 +410,12 @@ footer .grow{flex:1}
 <div class="orb orb-g"></div>
 <div id="glow"></div>
 <div class="spine" id="spine"></div>
+
+<div class="lang-toggle" aria-label="Idioma / Language">
+  <button type="button" data-lang="es" class="active" aria-label="Español">ES</button>
+  <span aria-hidden="true">·</span>
+  <button type="button" data-lang="en" aria-label="English">EN</button>
+</div>
 
 <aside class="rail">
   <div class="mark">
@@ -617,9 +700,112 @@ if (reduced) {
   document.getElementById('fw').classList.add('on');
 }
 
+/* ---------- i18n: the Spanish DOM is the source of truth; English overlays it ----------
+   Keys are CSS selectors ('sel@attr' targets an attribute; array values map onto
+   querySelectorAll in document order). ES values are captured from the DOM at load. */
+const EN = {
+  'title': 'Pedro Krug — Brand + Automation + Data',
+  'meta[name="description"]@content': 'Brand and technology consultancy in Valencia. I shape how a brand looks and sounds, and make sure the technology behind it plays in its favour.',
+  '.rail nav a': ['WHO','METHOD','WHAT','CONTACT'],
+  '.hero .eyebrow .decode': 'PEDRO KRUG · CONSULTANCY',
+  '#heroTitle': 'The brand you see.<br><span class="grad">The systems that</span><br><span class="grad">make it run.</span>',
+  '.hero .descriptor': 'BRAND + AUTOMATION + DATA',
+  '.hero .lede': 'Two sides of the same job. I shape how a brand looks and sounds, and I make sure the technology behind it plays in its favour.',
+  '.scroll-cue span:nth-child(2)': 'SCROLL',
+  '#quien .eyebrow .decode': 'WHO I AM',
+  '#quien h2': 'Ten years building brands. And the technology behind them.',
+  '#quien .body-col p': [
+    'Brazilian, born and raised in São Paulo. I trained in Dublin, where I studied Marketing, and today I work from Valencia. I have spent ten years building brands and the digital communication that sustains them, and along the way I learned something less common: how to build the technology behind them too. The websites, the systems, the automations, the artificial intelligence.',
+    '<strong>That combination is rare, and that is where the value sits.</strong> I can shape how a brand looks and sounds and, at the same time, make sure the tools that run it are working in its favour.'
+  ],
+  '.tags-row:first-child span': ['Brand','Digital communication','Design'],
+  '.tags-row:last-child span': ['UX/UI','Systems, automation & AI'],
+  '.portrait-cap': 'SÃO PAULO → DUBLIN → VALENCIA',
+  '#metodo .eyebrow .decode': 'HOW I WORK',
+  '#metodo h2': 'A brand is a perception. Branding is the method for influencing it.',
+  '.method-thesis': 'Far beyond the visual: a process that runs from strategy to every touchpoint, and on to the systems that make it work. <strong>Four phases and a circuit that closes.</strong>',
+  '#fw .lbl': ['Strategy','Identity','Communication','Systems'],
+  '#fw .sub': ['POSITIONING','VISUAL ∪ VERBAL','TOUCHPOINTS','WEB · CRM','AUTOMATION · AI','DATA · LEARNING · THE CIRCUIT CLOSES'],
+  '.step-n': ['PHASE 01','PHASE 02','PHASE 03','PHASE 04','∞'],
+  '.step-t': [
+    'Strategy<small>BUSINESS · AUDIENCE · VALUE · STORY</small>',
+    'Identity<small>VISUAL ∪ VERBAL</small>',
+    'Communication<small>ALL TOUCHPOINTS</small>',
+    'Systems<small>WEB · CRM · AUTOMATION · AI</small>',
+    'The circuit<small>DATA · LEARNING</small>'
+  ],
+  '.step-d': [
+    'Four inputs resolving into a single output: positioning. The decision that orders every other one.',
+    'Positioning expressed in two languages working together: how the brand looks and how it speaks.',
+    'The brand deploys where the business happens: web, trade fairs, social media, email, sales collateral. Every touchpoint wired to the same centre.',
+    'The technology that makes everything above work: the website, the CRM, the automations, the artificial intelligence. Evaluated and directed with judgement, so it serves the brand and not the other way around.',
+    'What the systems measure returns to the strategy: real data that sharpens the positioning, the communication and the tools. The brand stops being a project and becomes a system that learns.'
+  ],
+  '#que .eyebrow .decode': 'WHAT I DO',
+  '#que h2': 'Two fronts, one practice.',
+  '.front .k': ['FRONT A','FRONT B'],
+  '.front h3': ['Brand, marketing & communication','Systems, automation & AI'],
+  '.front p': [
+    'Creative direction, positioning, identity and communication strategy, together with the pieces and the spaces that make it real.',
+    'Senior planning and evaluation of the technology that should support the business: discovery, architecture, specifications, vendor direction and validation. Execution is channelled through 5Meridian.'
+  ],
+  '.front .role': ['I DIRECT AND PRODUCE','I DIRECT AND VALIDATE'],
+  '#contacto .eyebrow .decode': 'CONTACT',
+  '#contacto h2': 'Let’s start with a conversation.',
+  'label[for="f-name"]': 'NAME',
+  'label[for="f-email"]': 'EMAIL',
+  'label[for="f-msg"]': 'MESSAGE',
+  '#f-name@placeholder': 'What’s your name?',
+  '#f-email@placeholder': 'Where do I reply?',
+  '#f-msg@placeholder': 'Tell me more about your project: where it is today and where you want to take it.',
+  '#sendLabel': 'SEND MESSAGE',
+  '.contact-aside p': 'Tell me what you’re working on. I reply as soon as possible and we take the conversation from there.',
+  '.contact-aside .direct': 'OR DIRECT: <a href="mailto:pedro@pedrokrug.com">PEDRO@PEDROKRUG.COM</a>',
+  'footer span:nth-child(2)': 'VALENCIA, SPAIN',
+  'footer span:nth-child(4)': 'BRAND + AUTOMATION + DATA',
+  'footer span:nth-child(6)': 'BUILT WITH THE SAME TOOLS I RECOMMEND TO MY CLIENTS'
+};
+const NOTES = {
+  es: { sending:'ENVIANDO…', sent:'GRACIAS · TE RESPONDO LO ANTES POSIBLE', err:'NO SE PUDO ENVIAR · ESCRÍBEME: PEDRO@PEDROKRUG.COM', retry:'REINTENTAR', send:'ENVIAR MENSAJE' },
+  en: { sending:'SENDING…', sent:'THANK YOU · I WILL REPLY AS SOON AS POSSIBLE', err:'COULD NOT SEND · EMAIL ME: PEDRO@PEDROKRUG.COM', retry:'RETRY', send:'SEND MESSAGE' }
+};
+const parseKey = k => { const [sel, attr] = k.split('@'); return { sel, attr }; };
+const ES = {};
+for (const key of Object.keys(EN)) {
+  const { sel, attr } = parseKey(key);
+  if (sel === 'title') { ES[key] = document.title; continue; }
+  const els = document.querySelectorAll(sel);
+  if (Array.isArray(EN[key])) ES[key] = [...els].map(el => attr ? el.getAttribute(attr) : el.innerHTML);
+  else if (els[0]) ES[key] = attr ? els[0].getAttribute(attr) : els[0].innerHTML;
+}
+let lang = 'es';
+function setVal(el, attr, v) {
+  if (v == null) return;
+  if (attr) el.setAttribute(attr, v);
+  else if (el.namespaceURI && el.namespaceURI.includes('svg')) el.textContent = v;
+  else el.innerHTML = v;
+  if (!attr && el.dataset && el.dataset.text != null) el.dataset.text = v.replace(/<[^>]*>/g, '');
+}
+function applyLang(l) {
+  lang = l;
+  const dict = l === 'en' ? EN : ES;
+  for (const key of Object.keys(EN)) {
+    const { sel, attr } = parseKey(key);
+    if (sel === 'title') { document.title = dict[key]; continue; }
+    const els = document.querySelectorAll(sel);
+    const val = dict[key];
+    if (Array.isArray(val)) els.forEach((el, i) => setVal(el, attr, val[i]));
+    else if (els[0]) setVal(els[0], attr, val);
+  }
+  document.documentElement.lang = l;
+  document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+  try { localStorage.setItem('pk-lang', l); } catch (e) {}
+}
+
 /* hero: word-by-word stagger; the gradient words rise as one unit */
 const h1 = document.getElementById('heroTitle');
-if (!reduced) {
+function staggerH1() {
+  if (reduced) return;
   const frag = document.createDocumentFragment();
   let i = 0;
   const addUnit = (text, cls) => {
@@ -640,6 +826,17 @@ if (!reduced) {
   });
   h1.textContent = ''; h1.append(frag);
 }
+/* language toggle wiring + initial language (Spanish by default) */
+document.querySelectorAll('.lang-toggle button').forEach(b =>
+  b.addEventListener('click', () => {
+    if (b.dataset.lang !== lang) { applyLang(b.dataset.lang); staggerH1(); }
+  }));
+(() => {
+  const fromUrl = new URLSearchParams(location.search).get('lang');
+  let saved = null; try { saved = localStorage.getItem('pk-lang'); } catch (e) {}
+  if ((fromUrl || saved) === 'en') applyLang('en');
+})();
+staggerH1();
 
 /* spine grows with scroll */
 const spine = document.getElementById('spine');
@@ -727,7 +924,7 @@ document.getElementById('contactForm').addEventListener('submit', async e => {
   const note = document.getElementById('formNote');
   const label = document.getElementById('sendLabel');
   const btn = document.querySelector('.send');
-  btn.disabled = true; label.textContent = 'ENVIANDO…'; note.classList.remove('show','err');
+  btn.disabled = true; label.textContent = NOTES[lang].sending; note.classList.remove('show','err');
   try {
     const res = await fetch(FORM_ENDPOINT, {
       method: 'POST',
@@ -735,14 +932,14 @@ document.getElementById('contactForm').addEventListener('submit', async e => {
       body: JSON.stringify({ name, email, message: msg, source: 'pedrokrug.com' })
     });
     if (!res.ok) throw new Error(res.status);
-    note.textContent = 'GRACIAS · TE RESPONDO LO ANTES POSIBLE';
+    note.textContent = NOTES[lang].sent;
     note.classList.add('show');
     e.target.reset();
-    label.textContent = 'ENVIAR MENSAJE';
+    label.textContent = NOTES[lang].send;
   } catch {
-    note.textContent = 'NO SE PUDO ENVIAR · ESCRÍBEME: PEDRO@PEDROKRUG.COM';
+    note.textContent = NOTES[lang].err;
     note.classList.add('show','err');
-    label.textContent = 'REINTENTAR';
+    label.textContent = NOTES[lang].retry;
   }
   btn.disabled = false;
 });
