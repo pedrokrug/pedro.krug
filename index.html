@@ -6,6 +6,9 @@
 <title>Pedro Krug · La forma y la máquina</title>
 <meta name="description" content="Doy forma a lo que es una marca y levanto la máquina que la mantiene viva. Marca y sistemas, desde Valencia.">
 <link rel="canonical" href="https://www.pedrokrug.com/">
+<link rel="alternate" hreflang="es" href="https://www.pedrokrug.com/">
+<link rel="alternate" hreflang="en" href="https://www.pedrokrug.com/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://www.pedrokrug.com/">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="theme-color" content="#0c0b0a">
 <meta property="og:type" content="website">
@@ -97,6 +100,19 @@
   .seal{color:var(--seal)}
   .paren{font-family:var(--disp);font-weight:500;color:var(--seal);line-height:.62}
   .mark{font-family:var(--mono);font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--seal)}
+
+  /* ============ LANGUAGE SWITCHER (fixed, top-right) ============ */
+  /* difference blend keeps it legible over sumi, the red/blue fields and the paper método */
+  .langsw{position:fixed;top:clamp(15px,2.4vh,28px);right:clamp(15px,3vw,36px);z-index:900;
+    display:flex;gap:.5em;align-items:center;
+    font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    mix-blend-mode:difference;color:#fff}
+  .langsw button{appearance:none;-webkit-appearance:none;background:none;border:0;margin:0;padding:4px 2px;
+    cursor:pointer;color:#fff;font:inherit;letter-spacing:inherit;text-transform:inherit;opacity:.45;transition:opacity .25s}
+  .langsw button:hover{opacity:.8}
+  .langsw button[aria-current="true"]{opacity:1}
+  .langsw .sep{opacity:.4}
+  @media(prefers-reduced-motion:reduce){.langsw button{transition:none}}
 
   section{position:relative}
   .pad{padding:clamp(64px,11vw,150px) clamp(20px,5vw,80px)}
@@ -476,16 +492,23 @@
   </filter>
 </svg>
 
+<!-- ============================ LANG SWITCHER ============================ -->
+<nav class="langsw" aria-label="Language">
+  <button type="button" data-lang="es" aria-current="true">ES</button>
+  <span class="sep" aria-hidden="true">·</span>
+  <button type="button" data-lang="en" aria-current="false">EN</button>
+</nav>
+
 <!-- ============================ HERO ============================ -->
 <section class="hero">
   <div class="onca-hero" data-par="60" aria-hidden="true"><img src="img/onca-pintada.jpg" alt="" aria-hidden="true" decoding="async" alt=""></div>
   <div class="hero-inner">
     <div class="hero-body">
-      <div class="eye mono" data-scr>( marca &nbsp;·&nbsp; sistemas )</div>
-      <h1 class="resolve">La forma<span class="l2">y la máquina.</span></h1>
+      <div class="eye mono" data-scr data-i18n="eyebrow">( marca &nbsp;·&nbsp; sistemas )</div>
+      <h1 class="resolve" data-i18n="hero_h1">La forma<span class="l2">y la máquina.</span></h1>
       <div class="under">
-        <p class="lede resolve">Doy forma a lo que es una marca y levanto la máquina que la mantiene viva. Dos oficios que casi nunca viven en la misma persona.</p>
-        <div class="sign">Pedro Krug · marca y sistemas · Valencia</div>
+        <p class="lede resolve" data-i18n="hero_lede">Doy forma a lo que es una marca y levanto la máquina que la mantiene viva. Dos oficios que casi nunca viven en la misma persona.</p>
+        <div class="sign" data-i18n="hero_sign">Pedro Krug · marca y sistemas · Valencia</div>
       </div>
     </div>
     <div class="krugmark" aria-hidden="true"><svg viewBox="0 0 508 1184" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -547,15 +570,15 @@
       <circle class="mdot" cx="300" cy="300" r="4.5"/>
     </svg>
   </div>
-  <div class="mark reveal">( 01 ) &nbsp; En cifras</div>
+  <div class="mark reveal">( 01 ) &nbsp; <span data-i18n="cifras_mark">En cifras</span></div>
   <div class="nums">
     <div class="big-num reveal">
-      <div class="top">En producción · 2026</div>
-      <div class="fig">+300.000</div>
-      <div class="cap">ejecuciones al mes orquestadas en producción</div>
+      <div class="top" data-i18n="cifras_top">En producción · 2026</div>
+      <div class="fig" data-i18n="cifras_fig">+300.000</div>
+      <div class="cap" data-i18n="cifras_cap">ejecuciones al mes orquestadas en producción</div>
     </div>
     <div class="sats reveal">
-      <div class="sat"><div class="n">10</div><div class="k">años entre la marca y los sistemas</div></div>
+      <div class="sat"><div class="n">10</div><div class="k" data-i18n="sat_k">años entre la marca y los sistemas</div></div>
     </div>
   </div>
 </section>
@@ -576,10 +599,10 @@
     </svg>
   </div>
   <div class="fbody">
-    <div class="flbl">( 02 ) &nbsp;— &nbsp;Frente A</div>
-    <h2>La marca<br>que se ve.</h2>
-    <span class="role">Posición y forma</span>
-    <p class="fdesc">Llevo la marca de principio a fin: el territorio que ocupa, cómo suena su voz y un sistema visual que la vuelve reconocible. Después bajo todo eso a las piezas y los espacios donde se hace tangible, del catálogo impreso al escaparate.</p>
+    <div class="flbl">( 02 ) &nbsp;— &nbsp;<span data-i18n="frenteA_mark">Frente A</span></div>
+    <h2 data-i18n="frenteA_h2">La marca<br>que se ve.</h2>
+    <span class="role" data-i18n="frenteA_role">Posición y forma</span>
+    <p class="fdesc" data-i18n="frenteA_fdesc">Llevo la marca de principio a fin: el territorio que ocupa, cómo suena su voz y un sistema visual que la vuelve reconocible. Después bajo todo eso a las piezas y los espacios donde se hace tangible, del catálogo impreso al escaparate.</p>
   </div>
   <div></div>
 </section>
@@ -617,11 +640,11 @@
     <rect class="node" x="754" y="714" width="12" height="12"/>
   </svg>
   <div class="fbody">
-    <div class="flbl">( 03 ) &nbsp;— &nbsp;Frente B</div>
-    <h2>Los sistemas<br>que la sostienen.</h2>
-    <span class="role">Criterio y estructura</span>
-    <p class="fdesc">Pienso y valido la tecnología que el negocio necesita para crecer, del primer planteamiento a la arquitectura y las especificaciones. Dirijo cómo se construye y orquesto a los especialistas que lo levantan, para que el sistema sirva a la marca y no al revés. La automatización y la IA son el motor de este trabajo, no un añadido.</p>
-    <div class="spec">Descubrimiento · Arquitectura · Especificaciones · Validación</div>
+    <div class="flbl">( 03 ) &nbsp;— &nbsp;<span data-i18n="frenteB_mark">Frente B</span></div>
+    <h2 data-i18n="frenteB_h2">Los sistemas<br>que la sostienen.</h2>
+    <span class="role" data-i18n="frenteB_role">Criterio y estructura</span>
+    <p class="fdesc" data-i18n="frenteB_fdesc">Pienso y valido la tecnología que el negocio necesita para crecer, del primer planteamiento a la arquitectura y las especificaciones. Dirijo cómo se construye y orquesto a los especialistas que lo levantan, para que el sistema sirva a la marca y no al revés. La automatización y la IA son el motor de este trabajo, no un añadido.</p>
+    <div class="spec" data-i18n="frenteB_spec">Descubrimiento · Arquitectura · Especificaciones · Validación</div>
   </div>
 </section>
 
@@ -666,9 +689,9 @@
 <section class="pad about">
   <div class="retr">
     <div class="side reveal">
-      <div class="mark">( 04 ) &nbsp; Quién</div>
-      <h2>El mismo criterio en dos oficios.</h2>
-      <p class="bio">Soy Pedro Krug. Me formé en marketing y llevo años moviéndome entre la marca y la tecnología del negocio, dos mundos que la mayoría elige por separado y que a mí se me fueron juntando por el camino, hasta volverse una sola manera de mirar. Trabajo con quien necesita las dos cosas a la vez: una identidad clara y una infraestructura a su altura. Oriento, valido y decido dónde poner el foco.</p>
+      <div class="mark">( 04 ) &nbsp; <span data-i18n="quien_mark">Quién</span></div>
+      <h2 data-i18n="quien_h2">El mismo criterio en dos oficios.</h2>
+      <p class="bio" data-i18n="quien_bio">Soy Pedro Krug. Me formé en marketing y llevo años moviéndome entre la marca y la tecnología del negocio, dos mundos que la mayoría elige por separado y que a mí se me fueron juntando por el camino, hasta volverse una sola manera de mirar. Trabajo con quien necesita las dos cosas a la vez: una identidad clara y una infraestructura a su altura. Oriento, valido y decido dónde poner el foco.</p>
     </div>
     <div class="frame reveal">
       <span class="paren pz l" aria-hidden="true">(</span>
@@ -676,7 +699,7 @@
       <span class="paren pz r" aria-hidden="true">)</span>
     </div>
     <div class="side r reveal">
-      <div class="journey">São Paulo → Dublín → Valencia</div>
+      <div class="journey" data-i18n="journey">São Paulo → Dublín → Valencia</div>
       <div class="sig-quien" aria-hidden="true"><svg viewBox="0 0 987 168" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="LOGO PK signature vertical">
 <g id="Vector">
@@ -692,7 +715,7 @@
 </g>
 </g>
 </svg></div>
-      <p class="bio" style="margin-left:auto">Marca · comunicación · diseño · sistemas · automatización · IA</p>
+      <p class="bio" style="margin-left:auto" data-i18n="disciplines">Marca · comunicación · diseño · sistemas · automatización · IA</p>
     </div>
   </div>
 </section>
@@ -702,13 +725,13 @@
   <div class="head reveal">
     <span class="paren pz">(</span>
     <div>
-      <div class="mark" style="margin-bottom:10px">( 05 ) &nbsp; Trabajo</div>
-      <h2>Menos relato,<br>más obra.</h2>
+      <div class="mark" style="margin-bottom:10px">( 05 ) &nbsp; <span data-i18n="trabajo_mark">Trabajo</span></div>
+      <h2 data-i18n="trabajo_h2">Menos relato,<br>más obra.</h2>
     </div>
     <span class="paren pz">)</span>
   </div>
   <div class="row reveal">
-    <span class="mono galhint">Desliza <span aria-hidden="true">→</span></span>
+    <span class="mono galhint"><span data-i18n="galhint">Desliza</span> <span aria-hidden="true">→</span></span>
     <div class="bhs">
       <a class="bh" href="https://www.behance.net/pedrokrug" target="_blank" rel="noopener">Behance ↗</a>
       <a class="bh" href="https://www.linkedin.com/in/pedro-krug" target="_blank" rel="noopener">LinkedIn ↗</a>
@@ -734,10 +757,10 @@
 
 <!-- ============================ MÉTODO ============================ -->
 <section class="pad method">
-  <div class="mark reveal">( 06 ) &nbsp; Método</div>
+  <div class="mark reveal">( 06 ) &nbsp; <span data-i18n="metodo_mark">Método</span></div>
   <h2 class="reveal statement">
-    <span class="s-a">Una marca vive en la cabeza de quien la mira, y ahí casi nunca coincide con lo que la empresa cree ser.</span>
-    <span class="s-b">Dirigir esa distancia es el oficio de la marca; sostener el negocio cuando crece, el de los sistemas.</span>
+    <span class="s-a" data-i18n="metodo_s_a">Una marca vive en la cabeza de quien la mira, y ahí casi nunca coincide con lo que la empresa cree ser.</span>
+    <span class="s-b" data-i18n="metodo_s_b">Dirigir esa distancia es el oficio de la marca; sostener el negocio cuando crece, el de los sistemas.</span>
   </h2>
   <div class="fw-wrap reveal">
     <svg class="fw" viewBox="0 0 1260 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Estrategia, Identidad, Comunicación, Sistemas — y el circuito de datos de vuelta a la estrategia">
@@ -818,13 +841,13 @@
       <path class="mdot" d="M44 62 l -9 18 l 18 0 Z"/>
     </svg>
   </div>
-  <div class="mark reveal">( 07 ) &nbsp; Contacto</div>
+  <div class="mark reveal">( 07 ) &nbsp; <span data-i18n="contacto_mark">Contacto</span></div>
   <div class="big reveal">
     <span class="paren pz" aria-hidden="true">(</span>
-    <h2>Hablemos.</h2>
+    <h2 data-i18n="contacto_h2">Hablemos.</h2>
     <span class="paren pz" aria-hidden="true">)</span>
   </div>
-  <p class="invite reveal">Si tienes entre manos algo que necesita marca y máquina a la vez, escríbeme.</p>
+  <p class="invite reveal" data-i18n="invite">Si tienes entre manos algo que necesita marca y máquina a la vez, escríbeme.</p>
   <div class="colophon reveal">
     <div class="sig" aria-hidden="true"><svg viewBox="0 0 987 168" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="LOGO PK signature vertical">
@@ -842,10 +865,10 @@
 </g>
 </svg></div>
     <dl class="grid">
-      <div><dt>Directo</dt><dd><a href="mailto:pedro@pedrokrug.com">pedro@pedrokrug.com</a></dd></div>
+      <div><dt data-i18n="dl_directo">Directo</dt><dd><a href="mailto:pedro@pedrokrug.com">pedro@pedrokrug.com</a></dd></div>
       <div><dt>Behance</dt><dd><a href="https://www.behance.net/pedrokrug" target="_blank" rel="noopener">/pedrokrug ↗</a></dd></div>
       <div><dt>LinkedIn</dt><dd><a href="https://www.linkedin.com/in/pedro-krug" target="_blank" rel="noopener">Pedro Krug ↗</a></dd></div>
-      <div><dt>Base</dt><dd>Valencia · ES</dd></div>
+      <div><dt data-i18n="dl_base">Base</dt><dd data-i18n="base_value">Valencia · ES</dd></div>
     </dl>
   </div>
 </section>
@@ -866,6 +889,104 @@
   </div>
   <span class="mono" style="color:var(--faint)">© 2026</span>
 </footer>
+
+<!-- ============================ i18n ============================ -->
+<script>
+(function(){
+  // Spanish is the source of truth in the DOM; only EN (and later PT) live here.
+  var I18N = {
+    en: {
+      eyebrow: '( brand &nbsp;·&nbsp; systems )',
+      hero_h1: 'What you see,<span class="l2">and what you don\'t.</span>',
+      hero_lede: 'I shape what a brand is and I build the machine that keeps it alive. Two crafts you almost never find in one person.',
+      hero_sign: 'Pedro Krug · brand and systems · Valencia',
+      cifras_mark: 'By the numbers',
+      cifras_top: 'In production · 2026',
+      cifras_fig: '300,000+',
+      cifras_cap: 'runs a month, orchestrated in production',
+      sat_k: 'years between brand and systems',
+      frenteA_mark: 'Side A',
+      frenteA_h2: 'The brand<br>people see.',
+      frenteA_role: 'Position and form',
+      frenteA_fdesc: 'I take a brand from start to finish: the territory it holds, how its voice carries, and a visual system that makes it recognisable. Then I bring all of that into the pieces and the spaces where it becomes real, from the printed catalogue to the shop window.',
+      frenteB_mark: 'Side B',
+      frenteB_h2: 'The systems<br>that hold it up.',
+      frenteB_role: 'Judgement and structure',
+      frenteB_fdesc: 'I plan and validate the technology the business needs to grow, from the first outline to the architecture and the specifications. I direct how it comes together and orchestrate the specialists who build it, so the system serves the brand and not the other way round. Automation and AI are the engine of this work, not an add-on.',
+      frenteB_spec: 'Discovery · Architecture · Specifications · Validation',
+      quien_mark: 'Who',
+      quien_h2: 'The same judgement across two crafts.',
+      quien_bio: 'I\'m Pedro Krug. I trained in marketing, and for years I\'ve moved between brand and the technology a business runs on: two worlds most people keep apart. They came together for me along the way, until they became a single way of seeing. I work with people who need both at once: a clear identity and an infrastructure to match. I guide, I validate, and I decide where the focus should go.',
+      journey: 'São Paulo → Dublin → Valencia',
+      disciplines: 'Brand · communication · design · systems · automation · AI',
+      trabajo_mark: 'Work',
+      trabajo_h2: 'Less story,<br>more work.',
+      galhint: 'Swipe',
+      metodo_mark: 'Method',
+      metodo_s_a: 'A brand lives in the mind of the person looking at it, and there it rarely matches what a company believes itself to be.',
+      metodo_s_b: 'Working that gap is the craft of brand; holding the business up as it grows, the craft of systems.',
+      contacto_mark: 'Contact',
+      contacto_h2: 'Let\'s talk.',
+      invite: 'If you\'re building something that needs both a brand and a machine, write to me.',
+      dl_directo: 'Direct',
+      dl_base: 'Base',
+      base_value: 'Valencia · ES',
+      _ticker: ['Brand','Automation','Data'],
+      _meta: { title: 'Pedro Krug · What you see, and what you don\'t',
+               desc: 'I shape what a brand is and build the machine that keeps it alive. Brand and systems, from Valencia.' }
+    }
+  };
+  var LANGS = { es:1, en:1 };
+  var nodes  = [].slice.call(document.querySelectorAll('[data-i18n]'));
+  var ES     = nodes.map(function(n){ return n.innerHTML; });
+  var tracks = [].slice.call(document.querySelectorAll('.ticker .track'));
+  var ESTRK  = tracks.map(function(t){ return t.innerHTML; });
+  var descEl = document.querySelector('meta[name="description"]');
+  var ogT    = document.querySelector('meta[property="og:title"]');
+  var ogD    = document.querySelector('meta[property="og:description"]');
+  var ESTTL  = document.title;
+  var ESDSC  = descEl ? descEl.getAttribute('content') : '';
+  var btns   = [].slice.call(document.querySelectorAll('.langsw button'));
+
+  function tickerFor(html, w){
+    return html.replace(/Marca/g, w[0]).replace(/Automatización/g, w[1]).replace(/Datos/g, w[2]);
+  }
+  function apply(lang){
+    var d = I18N[lang];
+    nodes.forEach(function(n,i){
+      var k = n.getAttribute('data-i18n');
+      n.innerHTML = (d && d[k] != null) ? d[k] : ES[i];
+    });
+    tracks.forEach(function(t,i){
+      t.innerHTML = (d && d._ticker) ? tickerFor(ESTRK[i], d._ticker) : ESTRK[i];
+    });
+    var m = d && d._meta;
+    document.title = (m && m.title) || ESTTL;
+    if (descEl) descEl.setAttribute('content', (m && m.desc) || ESDSC);
+    if (ogT) ogT.setAttribute('content', document.title);
+    if (ogD) ogD.setAttribute('content', (m && m.desc) || ESDSC);
+    document.documentElement.lang = lang;
+    btns.forEach(function(b){ b.setAttribute('aria-current', b.getAttribute('data-lang') === lang ? 'true' : 'false'); });
+  }
+  function setLang(lang, persist){
+    if (!LANGS[lang]) lang = 'es';
+    apply(lang);
+    if (persist){
+      try { localStorage.setItem('pk-lang', lang); } catch(e){}
+      try { var u = new URL(location.href);
+        if (lang === 'es') u.searchParams.delete('lang'); else u.searchParams.set('lang', lang);
+        history.replaceState(null, '', u); } catch(e){}
+    }
+  }
+  btns.forEach(function(b){ b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang'), true); }); });
+
+  var want = null;
+  try { want = new URLSearchParams(location.search).get('lang'); } catch(e){}
+  if (!want) { try { want = localStorage.getItem('pk-lang'); } catch(e){} }
+  if (want && LANGS[want] && want !== 'es') setLang(want, false);
+  else apply('es');
+})();
+</script>
 
 <script>
   document.documentElement.classList.add('js');
