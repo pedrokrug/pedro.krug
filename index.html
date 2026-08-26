@@ -497,6 +497,8 @@
   <button type="button" data-lang="es" aria-current="true">ES</button>
   <span class="sep" aria-hidden="true">·</span>
   <button type="button" data-lang="en" aria-current="false">EN</button>
+  <span class="sep" aria-hidden="true">·</span>
+  <button type="button" data-lang="pt" aria-current="false">PT</button>
 </nav>
 
 <!-- ============================ HERO ============================ -->
@@ -934,9 +936,49 @@
       _ticker: ['Brand','Automation','Data'],
       _meta: { title: 'Pedro Krug · What you see, and what you don\'t',
                desc: 'I shape what a brand is and build the machine that keeps it alive. Brand and systems, from Valencia.' }
+    },
+    pt: {
+      eyebrow: '( marca &nbsp;·&nbsp; sistemas )',
+      hero_h1: 'A marca<span class="l2">e a máquina.</span>',
+      hero_lede: 'Dou forma à essência de uma marca e monto a máquina que a mantém viva. Dois ofícios que quase nunca vivem na mesma pessoa.',
+      hero_sign: 'Pedro Krug · marca e sistemas · Valencia',
+      cifras_mark: 'Em números',
+      cifras_top: 'Em produção · 2026',
+      cifras_fig: '+300.000',
+      cifras_cap: 'execuções por mês orquestradas em produção',
+      sat_k: 'anos entre a marca e os sistemas',
+      frenteA_mark: 'Lado A',
+      frenteA_h2: 'A marca<br>que se vê.',
+      frenteA_role: 'Posição e forma',
+      frenteA_fdesc: 'Levo a marca do começo ao fim: o território que ela ocupa, como soa sua voz e um sistema visual que a torna reconhecível. Depois trago tudo isso para as peças e os espaços onde ela ganha corpo, do catálogo impresso à vitrine.',
+      frenteB_mark: 'Lado B',
+      frenteB_h2: 'Os sistemas<br>que a sustentam.',
+      frenteB_role: 'Critério e estrutura',
+      frenteB_fdesc: 'Penso e valido a tecnologia que o negócio precisa para crescer, do primeiro desenho à arquitetura e às especificações. Conduzo a construção e orquestro os especialistas que põem o sistema de pé, para que ele sirva à marca, e não o contrário. A automação e a IA são o motor deste trabalho, não um acréscimo.',
+      frenteB_spec: 'Descoberta · Arquitetura · Especificações · Validação',
+      quien_mark: 'Quem',
+      quien_h2: 'O mesmo critério em dois ofícios.',
+      quien_bio: 'Sou Pedro Krug. Me formei em marketing e passei anos me movendo entre a marca e a tecnologia do negócio, dois mundos que a maioria mantém separados e que, para mim, foram se juntando pelo caminho, até virarem uma só maneira de olhar. Trabalho com quem precisa das duas coisas ao mesmo tempo: uma identidade clara e uma infraestrutura à sua altura. Oriento, valido e decido onde colocar o foco.',
+      journey: 'São Paulo → Dublin → Valencia',
+      disciplines: 'Marca · comunicação · design · sistemas · automação · IA',
+      trabajo_mark: 'Trabalho',
+      trabajo_h2: 'Menos discurso,<br>mais obra.',
+      galhint: 'Arraste',
+      metodo_mark: 'Método',
+      metodo_s_a: 'Uma marca vive na cabeça de quem a vê, e ali quase nunca coincide com o que a empresa acredita ser.',
+      metodo_s_b: 'Trabalhar essa distância é o ofício da marca; sustentar o negócio quando ele cresce, o dos sistemas.',
+      contacto_mark: 'Contato',
+      contacto_h2: 'Vamos conversar.',
+      invite: 'Se você tem em mãos algo que precisa de marca e máquina ao mesmo tempo, me escreva.',
+      dl_directo: 'Direto',
+      dl_base: 'Base',
+      base_value: 'Valencia · ES',
+      _ticker: ['Marca','Automação','Dados'],
+      _meta: { title: 'Pedro Krug · A marca e a máquina',
+               desc: 'Dou forma à essência de uma marca e monto a máquina que a mantém viva. Marca e sistemas, de Valencia.' }
     }
   };
-  var LANGS = { es:1, en:1 };
+  var LANGS = { es:1, en:1, pt:1 };
   var nodes  = [].slice.call(document.querySelectorAll('[data-i18n]'));
   var ES     = nodes.map(function(n){ return n.innerHTML; });
   var tracks = [].slice.call(document.querySelectorAll('.ticker .track'));
