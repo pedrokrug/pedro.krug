@@ -306,6 +306,9 @@
   .method{background:var(--paper);color:var(--paper-ink)}
   .method .mark{color:var(--seal)}
   .method h2{font-size:clamp(30px,5.4vw,72px);max-width:16ch;letter-spacing:-.03em;margin:22px 0 clamp(32px,5vh,56px)}
+  .method h2.statement{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,80px);max-width:1080px;font-size:clamp(23px,3vw,40px);line-height:1.14;letter-spacing:-.02em}
+  .method h2.statement .s-b{color:var(--seal)}
+  @media(max-width:820px){.method h2.statement{grid-template-columns:1fr;gap:16px;max-width:34ch}}
   .fw-wrap{margin:0 auto;max-width:1180px}
   .fw{width:100%;height:auto;display:block}
   .fw .lbl{font-family:'Clash','InterV',sans-serif;font-weight:600;font-size:22px;fill:var(--paper-ink);letter-spacing:-.02em}
@@ -552,7 +555,7 @@
       <div class="cap">ejecuciones al mes orquestadas en producción</div>
     </div>
     <div class="sats reveal">
-      <div class="sat"><div class="n">10</div><div class="k">años a caballo entre la marca y los sistemas</div></div>
+      <div class="sat"><div class="n">10</div><div class="k">años entre la marca y los sistemas</div></div>
     </div>
   </div>
 </section>
@@ -617,7 +620,7 @@
     <div class="flbl">( 03 ) &nbsp;— &nbsp;Frente B</div>
     <h2>Los sistemas<br>que la sostienen.</h2>
     <span class="role">Criterio y estructura</span>
-    <p class="fdesc">Pienso y valido la tecnología que el negocio necesita para crecer, del primer planteamiento a la arquitectura y las especificaciones. Dirijo cómo se construye y dejo la parte densa en manos especializadas, para que el sistema sirva a la marca y no al revés. La automatización y la IA son el motor de este trabajo, no un añadido.</p>
+    <p class="fdesc">Pienso y valido la tecnología que el negocio necesita para crecer, del primer planteamiento a la arquitectura y las especificaciones. Dirijo cómo se construye y orquesto a los especialistas que lo levantan, para que el sistema sirva a la marca y no al revés. La automatización y la IA son el motor de este trabajo, no un añadido.</p>
     <div class="spec">Descubrimiento · Arquitectura · Especificaciones · Validación</div>
   </div>
 </section>
@@ -732,7 +735,10 @@
 <!-- ============================ MÉTODO ============================ -->
 <section class="pad method">
   <div class="mark reveal">( 06 ) &nbsp; Método</div>
-  <h2 class="reveal">Una marca vive en la cabeza de quien la mira, y ahí casi nunca coincide con lo que la empresa cree ser. Dirigir esa distancia es el oficio de la marca; sostener el negocio cuando crece, el de los sistemas.</h2>
+  <h2 class="reveal statement">
+    <span class="s-a">Una marca vive en la cabeza de quien la mira, y ahí casi nunca coincide con lo que la empresa cree ser.</span>
+    <span class="s-b">Dirigir esa distancia es el oficio de la marca; sostener el negocio cuando crece, el de los sistemas.</span>
+  </h2>
   <div class="fw-wrap reveal">
     <svg class="fw" viewBox="0 0 1260 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Estrategia, Identidad, Comunicación, Sistemas — y el circuito de datos de vuelta a la estrategia">
       <defs>
