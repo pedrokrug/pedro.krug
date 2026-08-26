@@ -211,6 +211,14 @@
   .obra .head .pz{font-size:clamp(80px,16vw,210px)}
   .obra h2{font-size:clamp(40px,8.5vw,138px);letter-spacing:-.04em;line-height:.82}
   .obra .row{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:18px;margin:clamp(18px,3vh,30px) 0 clamp(28px,4vh,42px)}
+  /* the outbound links travel as a pair, so they stay grouped when the row wraps */
+  .bhs{display:flex;align-items:flex-end;flex-wrap:wrap;gap:clamp(16px,3vw,40px)}
+  /* two display-size links plus the hint do not share a phone line: the second
+     one ran off the edge. Stack the row instead of shrinking the type. */
+  @media(max-width:760px){
+    .obra .row{flex-direction:column;align-items:flex-start;gap:16px}
+    .bhs{gap:26px}
+  }
   .bh{font-family:var(--disp);font-weight:600;font-size:clamp(22px,3vw,40px);text-decoration:none;color:var(--ink);border-bottom:2px solid var(--seal);padding-bottom:4px;transition:color .3s}
   .bh:hover{color:var(--seal)}
   /* A gallery that runs sideways off the right edge, so the work reads as a strip
@@ -699,7 +707,10 @@
   </div>
   <div class="row reveal">
     <span class="mono galhint">Desliza <span aria-hidden="true">→</span></span>
-    <a class="bh" href="https://www.behance.net/pedrokrug" target="_blank" rel="noopener">Behance ↗</a>
+    <div class="bhs">
+      <a class="bh" href="https://www.behance.net/pedrokrug" target="_blank" rel="noopener">Behance ↗</a>
+      <a class="bh" href="https://www.linkedin.com/in/pedro-krug" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
   </div>
   <div class="gal" tabindex="0" role="region" aria-label="Obra seleccionada">
     <a class="tile lg" style="--d:0.00s" href="https://www.behance.net/gallery/254718933/Levante-UD-x-Tunergia" target="_blank" rel="noopener"><img class="im" src="img/obra/254718933.jpg" alt="Levante UD x Tunergía" loading="lazy" decoding="async" width="900" height="704"><div class="tn"></div><div class="tx"></div><div class="kd mono seal">Patrocinio · LaLiga</div><div class="kn">01</div><div class="mt"><span class="t">Levante UD x Tunergía</span></div></a>
