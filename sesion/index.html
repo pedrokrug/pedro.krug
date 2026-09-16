@@ -132,7 +132,20 @@
     clip-path:circle(0px at var(--sx,50%) var(--sy,50%));transition:clip-path 1s cubic-bezier(.7,0,.2,1)}
   .stage.open{clip-path:circle(150vmax at var(--sx,50%) var(--sy,50%))}
   .stage.closing{transition-duration:.7s}
-  .stage-top{display:flex;justify-content:space-between;align-items:center;padding:18px var(--gut)}
+  .stage-top{display:grid;grid-template-columns:1fr minmax(0,560px) 1fr;align-items:center;gap:18px;padding:18px var(--gut)}
+  .stage-top .stage-close{justify-self:end}
+  .vprog{display:flex;flex-direction:column;gap:8px;opacity:0;transition:opacity .6s ease .8s}
+  .stage.open .vprog{opacity:1}
+  .vsegs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .vseg{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .vseg b{display:block;height:3px;background:rgba(243,239,230,.14);position:relative;overflow:hidden}
+  .vseg b i{position:absolute;inset:0 auto 0 0;width:0;background:#cf3620;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+  .vseg span{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#665f54;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;transition:color .4s}
+  .vseg.on span{color:#f3efe6}
+  .vseg.pulse b{box-shadow:0 0 0 1px #cf3620}
+  .vmeta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:#9c9384}
+  .vmeta .late{color:#cf3620}
+  @media(max-width:700px){.stage-top{grid-template-columns:1fr auto;row-gap:14px}.vprog{grid-column:1 / -1;grid-row:2}.vseg span{display:none}}
   .stage-top .mono{color:#8a8173}
   .stage-close{appearance:none;background:none;border:1px solid rgba(243,239,230,.24);color:#f3efe6;border-radius:999px;cursor:pointer;
     font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;padding:10px 16px;transition:border-color .2s}
@@ -144,8 +157,7 @@
   .stage .vstate{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#9c9384;min-height:16px;margin-top:6px;
     opacity:0;transition:opacity .6s ease .9s}
   .stage.open .vstate{opacity:1}
-  .stage .captions{width:min(100%,920px);margin-top:18px;max-height:min(11em,24vh);overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;
-    -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 1.6em);mask-image:linear-gradient(to bottom,transparent 0,#000 1.6em)}
+  .stage .captions{width:min(100%,920px);margin-top:18px;max-height:min(11em,24vh);overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
   .stage .captions .ai{font-size:clamp(15px,1.45vw,17px);line-height:1.5;color:#f3efe6;margin:0}
   .stage .captions .me{color:#9c9384;font-size:14px;line-height:1.5;margin:6px 0 0}
   .stage-foot{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px var(--gut) 26px;text-align:center;background:#0c0b0a;position:relative;z-index:1}
@@ -508,6 +520,8 @@
   const SDK = 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@1.25.0/+esm';
   const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let conv = null, closing = '', endTimer = null, raf = 0, mode = 'idle', stage = null, level = 0, speak = 0, heard = 0;
+  let clock = 0, t0 = 0, sent = {}, refetch = 0;
+  const LIMIT = 15 * 60;
 
   // open the stage from a point (the button that was pressed); autostart keeps the click's user gesture
   function openVoice(origin, autostart) {
@@ -522,7 +536,12 @@
     stage.style.setProperty('--sx', r ? `${r.left + r.width / 2}px` : '50%');
     stage.style.setProperty('--sy', r ? `${r.top + r.height / 2}px` : '50%');
     stage.innerHTML = `
-      <div class="stage-top"><span class="mono">${esc(S.content.client)}</span><button class="stage-close" id="vclose">Terminar</button></div>
+      <div class="stage-top"><span class="mono">${esc(S.content.client)}</span>
+        <div class="vprog" aria-label="Progreso">
+          <div class="vsegs">${S.content.parts.map((pt) => `<div class="vseg" data-part="${esc(pt.id)}"><b><i></i></b><span>${esc(pt.title)}</span></div>`).join('')}</div>
+          <div class="vmeta"><span id="vcount"></span><span id="vclock">00:00 / 15:00</span></div>
+        </div>
+        <button class="stage-close" id="vclose">Terminar</button></div>
       <div class="stage-mid">
         <canvas id="blob" aria-hidden="true"></canvas>
         <p class="vstate" id="vstate" aria-live="polite">${autostart ? 'Conectando' : 'Toca para empezar'}</p>
@@ -541,6 +560,7 @@
     document.getElementById('vform').onclick = () => closeVoice('#/p/' + S.content.parts[0].id);
     document.getElementById('blob').onclick = () => { if (!conv) startVoice(); };
     mode = 'idle'; level = 0; speak = 0; heard = 0;
+    vprogress();
     draw();
     if (autostart) startVoice();
   }
@@ -591,7 +611,8 @@
         signedUrl: signed,
         dynamicVariables: {nombre: S.user.name, codigo: String(store.get(CODE_KEY) || ''), respondidas},
         clientTools: {cerrar_voz: async (p) => { closing = String((p && p.motivo) || 'completa'); scheduleEnd(); }},
-        onConnect: () => { mode = 'listening'; vset('vstate', 'Te escucho'); },
+        onConnect: () => { mode = 'listening'; vset('vstate', 'Te escucho'); startClock(); },
+        onAgentToolResponse: (p) => onToolSaved(p),
         onDisconnect: () => onVoiceEnd(),
         onError: () => vfail('La conexión se ha cortado. Lo que dijiste ya está guardado.'),
         onModeChange: (m) => {
@@ -629,11 +650,11 @@
 
   async function onVoiceEnd() {
     const c = conv; conv = null; mode = 'idle';
-    clearTimeout(endTimer);
+    clearTimeout(endTimer); clearInterval(clock); clearTimeout(refetch);
     let id = ''; try { id = c && c.getId(); } catch {}
     if (id) api('voiceEnd', {conversation_id: id}, {keepalive: true}).catch(() => {});
     try { const fresh = await api('state'); S.answers = fresh.answers || {}; S.status = fresh.status; S.user = fresh.user; } catch {}
-    refreshCounts();
+    refreshCounts(); vprogress();
     if (closing === 'conducta') {
       store.set('pk_sesion_novoice_' + S.user.id, true);
       toast('La conversación de voz se ha cerrado. Puedes seguir por escrito.');
@@ -650,6 +671,58 @@
       <button class="btn ghost" id="vsum">Ver resumen</button></div>`;
     document.getElementById('vagain').onclick = () => startVoice();
     document.getElementById('vsum').onclick = () => closeVoice('#/fin');
+  }
+
+  // ---- progress: each save the agent makes arrives as a tool response; the question id is read
+  // from it when present, otherwise the saved answers are fetched again (debounced)
+  function vprogress(pulseId) {
+    if (!stage) return;
+    S.content.parts.forEach((pt) => {
+      const [a, n] = partCount(pt);
+      const seg = stage.querySelector(`.vseg[data-part="${pt.id}"]`);
+      if (!seg) return;
+      seg.querySelector('i').style.width = (n ? (a / n) * 100 : 0) + '%';
+      seg.classList.toggle('on', a > 0);
+      if (pulseId === pt.id) { seg.classList.remove('pulse'); void seg.offsetWidth; seg.classList.add('pulse'); setTimeout(() => seg.classList.remove('pulse'), 900); }
+    });
+    vset('vcount', `${answeredCount()} / ${allQ().length} temas`);
+  }
+  function onToolSaved(p) {
+    const txt = JSON.stringify(p || {});
+    if (txt.indexOf('guardar_respuesta') === -1) return;
+    const m = txt.match(/\b(P1\.\d+|[AB]\d+\.\d+)\b/);
+    if (m) {
+      const qid = m[1];
+      if (!hasAnswer(qid)) S.answers[qid] = {answer: '·', note: ''};
+      const part = S.content.parts.find((pt) => partQ(pt).some((q) => q.id === qid));
+      vprogress(part && part.id);
+      refreshCounts();
+      return;
+    }
+    clearTimeout(refetch);
+    refetch = setTimeout(async () => {
+      try { const f = await api('state'); S.answers = f.answers || {}; vprogress(); refreshCounts(); } catch {}
+    }, 5000);
+  }
+
+  // ---- time: 15 minutes. The page tells the agent when to move on or wrap up (it cannot keep time itself)
+  const mmss = (x) => `${String(Math.floor(x / 60)).padStart(2, '0')}:${String(Math.floor(x % 60)).padStart(2, '0')}`;
+  function startClock() {
+    clearInterval(clock); t0 = Date.now(); sent = {};
+    const note = (key, text) => { if (sent[key] || !conv) return; sent[key] = true; try { conv.sendContextualUpdate(text); } catch {} };
+    clock = setInterval(() => {
+      if (!conv) return clearInterval(clock);
+      const sec = (Date.now() - t0) / 1000;
+      const el = document.getElementById('vclock');
+      if (el) { el.textContent = `${mmss(sec)} / 15:00`; el.classList.toggle('late', sec > LIMIT - 120); }
+      const [p1] = S.content.parts;
+      const partDone = (i) => { const pt = S.content.parts[i]; return pt ? partCount(pt)[0] : 0; };
+      if (sec > 4 * 60 && p1) note('p2', 'Aviso de tiempo: llevamos unos 4 minutos. Si aún no has pasado a "Historia y marca", termina la pregunta en curso y pasa a esa parte.');
+      if (sec > 9 * 60) note('p3', `Aviso de tiempo: llevamos unos 9 minutos. ${partDone(2) ? 'Sigue con los temas clave que falten de "Qué vendéis".' : 'Pasa ya a "Qué vendéis", empezando por los temas clave.'}`);
+      if (sec > LIMIT - 120) note('wrap', 'Aviso de tiempo: quedan unos 2 minutos. Termina el tema en curso, pregunta si hay algo más que Pedro deba saber y despídete.');
+      if (sec > LIMIT) note('end', 'Aviso de tiempo: se ha acabado el tiempo. Despídete ahora en una frase y cierra con terminar_entrevista y cerrar_voz, motivo "pausa" si quedan temas o "completa" si no.');
+      if (sec > LIMIT + 45) { clearInterval(clock); endVoice(); }
+    }, 1000);
   }
 
   // ---- the living shape: a closed curve whose radius is moved by slow layered waves
