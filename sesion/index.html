@@ -352,7 +352,7 @@
     $app.innerHTML = bar() + `<main class="wrap welcome view">
       <h1 class="resolve">Hola, ${esc(S.user.name)}<span class="seal">.</span></h1>
       <p class="lede">${fmt(w.lede)}</p>
-      <div class="how">${w.how.map((h) => `<p>${fmt(h)}</p>`).join('')}</div>
+      <div class="how">${w.how.map((h) => `<p><span>${fmt(h)}</span></p>`).join('')}</div>
       <div class="cta">
         <button class="btn" data-go="${start}">${started ? 'Seguir' : 'Empezar'} <span class="ar">→</span></button>
         ${started ? '<button class="btn ghost" data-end>Resumen</button>' : ''}
