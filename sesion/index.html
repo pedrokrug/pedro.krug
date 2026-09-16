@@ -521,7 +521,7 @@
   const SDK = 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@1.25.0/+esm';
   const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let conv = null, closing = '', endTimer = null, raf = 0, mode = 'idle', stage = null, level = 0, speak = 0, heard = 0;
-  let clock = 0, t0 = 0, sent = {}, refetch = 0;
+  let clock = 0, t0 = 0, sent = {}, refetch = 0, linked = false;
   const LIMIT = 15 * 60;
 
   // open the stage from a point (the button that was pressed); autostart keeps the click's user gesture
@@ -621,12 +621,12 @@
     };
     try {
       const {Conversation} = await import(SDK);
-      closing = '';
+      closing = ''; linked = false;
       conv = await Conversation.startSession({
         signedUrl: signed,
         dynamicVariables: vars,
         clientTools: {cerrar_voz: async (p) => { closing = String((p && p.motivo) || 'completa'); scheduleEnd(); }},
-        onConnect: () => { mode = 'listening'; vset('vstate', 'Te escucho'); startClock(); },
+        onConnect: () => { linked = true; mode = 'listening'; vset('vstate', 'Te escucho'); startClock(); },
         onAgentToolResponse: (p) => onToolSaved(p),
         onDisconnect: () => onVoiceEnd(),
         onError: () => vfail('La conexión se ha cortado. Lo que dijiste ya está guardado.'),
@@ -666,6 +666,9 @@
 
   async function onVoiceEnd() {
     const c = conv; conv = null; mode = 'idle';
+    // a session that drops before it ever connected is a failed start, not a finished conversation
+    if (!linked) { clearInterval(clock); return vfail('No se ha podido iniciar la conversación. Recarga la página y vuelve a intentarlo.'); }
+    linked = false;
     clearTimeout(endTimer); clearInterval(clock); clearTimeout(refetch);
     let id = ''; try { id = c && c.getId(); } catch {}
     if (id) api('voiceEnd', {conversation_id: id}, {keepalive: true}).catch(() => {});
