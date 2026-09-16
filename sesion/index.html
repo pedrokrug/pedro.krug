@@ -234,7 +234,7 @@
     try {
       S = await api('state');
     } catch (e) {
-      if (e.status === 401) { store.del(CODE_KEY); return renderLogin(m ? 'Ese enlace no es válido. Revisa el código o escribe a pedro@pedrokrug.com.' : ''); }
+      if (e.status === 401) { store.del(CODE_KEY); return renderLogin(m ? 'Ese enlace no es válido. Revisa el código o escríbeme a pedro@pedrokrug.com.' : ''); }
       $app.innerHTML = `<div class="loading"><div style="text-align:center;padding:0 20px"><p class="mono seal">No se ha podido cargar</p><p style="color:var(--dim);margin-top:12px">Vuelve a intentarlo en un momento.</p><button class="btn ghost" style="margin-top:24px" onclick="location.reload()">Reintentar</button></div></div>`;
       return;
     }
@@ -311,7 +311,7 @@
       <div class="top"><img src="/sesion/pk.svg" alt="Pedro Krug"><span class="mono">Acceso privado</span></div>
       <div class="mid">
         <h1 class="resolve">Una conversación,<span class="l2">por escrito.</span></h1>
-        <p class="lede">Escribe el código que te ha enviado Pedro. Tus respuestas se guardan a medida que escribes y puedes volver cuando quieras.</p>
+        <p class="lede">Escribe el código que te he enviado. Tus respuestas se guardan a medida que escribes y puedes volver cuando quieras.</p>
         <form id="lf" autocomplete="off">
           <label for="code" class="mono" style="position:absolute;left:-9999px">Código de acceso</label>
           <input id="code" class="code" name="code" placeholder="XXXX-XXXX-XXXX" autocapitalize="characters" spellcheck="false" required>
@@ -335,7 +335,7 @@
       } catch (x) {
         b.disabled = false;
         err.textContent = x.status === 401
-          ? 'Ese código no es válido. Revísalo o escribe a pedro@pedrokrug.com.'
+          ? 'Ese código no es válido. Revísalo o escríbeme a pedro@pedrokrug.com.'
           : 'No se ha podido conectar. Vuelve a intentarlo en un momento.';
         err.hidden = false; inp.select();
       }
