@@ -617,7 +617,7 @@
       es_retorno: back ? 'sí' : 'no',
       saludo: back ? `¡Hola de nuevo, ${S.user.name}! Seguimos donde lo dejamos.` : `¡Hola, ${S.user.name}! Encantada. Cuando quieras, empezamos.`,
       resumen_previo: done.map((q) => `${q.id} (${short(plain(q.text), 70)}): ${short(S.answers[q.id].answer || S.answers[q.id].note, 180)}`).join(' | ') || 'nada todavía',
-      pendientes: open.map((q) => `${q.id} ${short(plain(q.text), 80)}`).join(' | ') || 'ninguno',
+      temas: topicsBlock((id) => done.some((q) => q.id === id)),
     };
     try {
       const {Conversation} = await import(SDK);
@@ -646,6 +646,27 @@
       conv = null;
       vfail('No se ha podido iniciar la conversación. Vuelve a intentarlo o sigue por escrito.');
     }
+  }
+
+  // the topics the agent may ask about in this call: only the pending ones (same format as n8n/topics.mjs)
+  function topicsBlock(isDone) {
+    const out = [];
+    for (const p of S.content.parts) {
+      const pending = p.topics.map((t) => ({t, qs: t.questions.filter((q) => !isDone(q.id))})).filter((x) => x.qs.length);
+      if (!pending.length) continue;
+      out.push(`\n## ${p.title}`);
+      for (const {t, qs} of pending) {
+        if (t.context) out.push(`Contexto de "${t.title}"${t.key ? ' (clave)' : ''}: ${plain(t.context)}`);
+        for (const q of qs) {
+          let line = `- [${q.id}] ${plain(q.text)}${t.key ? ' (clave)' : ''}`;
+          if (q.options) line += `\n  Opciones para guardar: ${q.options.join(' | ')}`;
+          if (q.hint) line += `\n  Pista: ${plain(q.hint)}`;
+          if (q.bridge) line += `\n  Enlace (orientación interna, no la leas): ${q.bridge}`;
+          out.push(line);
+        }
+      }
+    }
+    return out.join('\n') || 'No queda ningún tema pendiente.';
   }
 
   // let the goodbye finish before hanging up
