@@ -91,7 +91,7 @@
   .login .top{display:flex;justify-content:space-between;align-items:center}
   .login .top img{height:38px}
   .login .mid{align-self:center;max-width:1100px;width:100%;margin:0 auto;padding:clamp(40px,8vh,90px) 0}
-  .login h1{font-size:clamp(46px,8.4vw,128px);line-height:.88;letter-spacing:-.045em;margin:22px 0 clamp(26px,4vh,40px)}
+  .login h1{font-size:clamp(46px,8.4vw,128px);line-height:.88;letter-spacing:-.045em;margin:0 0 clamp(26px,4vh,40px)}
   .login h1 .l2{display:block;color:var(--dim)}
   .login .lede{max-width:44ch;color:var(--dim);font-size:clamp(15px,1.4vw,17px)}
   .login form{margin-top:clamp(28px,5vh,48px);display:flex;flex-wrap:wrap;gap:12px;max-width:620px}
@@ -104,7 +104,7 @@
 
   /* ============ WELCOME ============ */
   .wrap{max-width:880px;margin:0 auto;padding:clamp(36px,7vh,80px) var(--gut) clamp(56px,9vh,100px)}
-  .welcome h1{font-size:clamp(44px,7vw,96px);line-height:.88;letter-spacing:-.045em;margin:16px 0 22px}
+  .welcome h1{font-size:clamp(44px,7vw,96px);line-height:.88;letter-spacing:-.045em;margin:0 0 22px}
   .welcome .lede{max-width:56ch;color:var(--fg);font-size:clamp(16px,1.5vw,18px);line-height:1.55}
   .how{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:20px}
   .how p{color:var(--dim);font-size:14.5px;display:flex;gap:10px}
@@ -129,7 +129,7 @@
   .steps button.done{border-top-color:rgba(207,54,32,.5);color:var(--dim)}
   .steps button[aria-current="true"]{border-top-color:var(--seal);color:var(--fg)}
   @media(max-width:620px){.steps button span{display:none}}
-  .screen h2{font-size:clamp(32px,4.4vw,52px);line-height:.95;letter-spacing:-.035em;margin:10px 0 8px}
+  .screen h2{font-size:clamp(32px,4.4vw,52px);line-height:.95;letter-spacing:-.035em;margin:0 0 8px}
   .screen .intro{color:var(--dim);font-size:15px;margin-bottom:clamp(20px,4vh,34px)}
   .tp{border-top:1px solid var(--line-2);padding-top:18px;margin-top:clamp(22px,4vh,36px)}
   .tp-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
@@ -164,7 +164,7 @@
   .pager .btn.ghost:only-child{margin-left:auto}
 
   /* ============ END ============ */
-  .end h1{font-size:clamp(44px,7vw,96px);line-height:.88;letter-spacing:-.045em;margin:16px 0 20px}
+  .end h1{font-size:clamp(44px,7vw,96px);line-height:.88;letter-spacing:-.045em;margin:0 0 20px}
   .end .lede{max-width:56ch;color:var(--dim);font-size:clamp(15px,1.4vw,17px)}
   .stat{display:flex;align-items:baseline;gap:14px;margin:clamp(24px,4vh,36px) 0 0;flex-wrap:wrap}
   .stat .big{font-family:var(--disp);font-weight:600;font-size:clamp(52px,7vw,84px);line-height:.8;letter-spacing:-.04em;color:var(--seal)}
@@ -257,8 +257,6 @@
   const allQ = () => S.content.parts.flatMap(partQ);
   const answeredCount = () => allQ().filter((q) => hasAnswer(q.id)).length;
   const partCount = (p) => { const qs = partQ(p); return [qs.filter((q) => hasAnswer(q.id)).length, qs.length]; };
-  // rough reading-and-typing time: open text ~1 min, a choice a few seconds
-  const minutes = (p) => Math.max(1, Math.round(partQ(p).reduce((m, q) => m + (!q.type ? 1 : q.type === 'choice' ? 0.3 : 0.15), 0)));
 
   // ---------------------------------------------------------------- router
   function route() {
@@ -312,7 +310,6 @@
     $app.innerHTML = `<main class="login view">
       <div class="top"><img src="/sesion/pk.svg" alt="Pedro Krug"><span class="mono">Acceso privado</span></div>
       <div class="mid">
-        <p class="mono"><span class="seal">●</span>&nbsp;&nbsp;Sesión de trabajo</p>
         <h1 class="resolve">Una conversación,<span class="l2">por escrito.</span></h1>
         <p class="lede">Escribe el código que te ha enviado Pedro. Tus respuestas se guardan a medida que escribes y puedes volver cuando quieras.</p>
         <form id="lf" autocomplete="off">
@@ -353,7 +350,6 @@
     const start = started && c.parts.some((p) => p.id === last) ? last : c.parts[0].id;
     document.title = `${c.title} · ${c.client}`;
     $app.innerHTML = bar() + `<main class="wrap welcome view">
-      <p class="mono">${esc(c.client)} · ${esc(w.duration)}</p>
       <h1 class="resolve">Hola, ${esc(S.user.name)}<span class="seal">.</span></h1>
       <p class="lede">${fmt(w.lede)}</p>
       <div class="how">${w.how.map((h) => `<p>${fmt(h)}</p>`).join('')}</div>
@@ -365,7 +361,7 @@
         ${c.parts.map((p, i) => { const [a, n] = partCount(p); return `<button class="prow" data-go="${p.id}">
           <span class="pn">${pad(i + 1)}</span>
           <span><span class="pt">${esc(p.title)}</span><span class="pi">${fmt(p.intro)}</span></span>
-          <span class="pc"><span class="mono">${a ? `${a} / ${n}` : `${minutes(p)} min`}</span><span class="meter"><i style="width:${(a / n) * 100}%"></i></span></span>
+          <span class="pc"><span class="mono">${a ? `${a} / ${n}` : `${n} preguntas`}</span><span class="meter"><i style="width:${(a / n) * 100}%"></i></span></span>
         </button>`; }).join('')}
       </nav>
     </main>`;
@@ -401,7 +397,6 @@
     const single = p.topics.length === 1 && !p.topics[0].context;
     $app.innerHTML = bar() + `<main class="wrap screen view">
       <div class="steps">${parts.map((x, j) => { const [a, n] = partCount(x); return `<button data-go="${x.id}" class="${a === n ? 'done' : ''}" aria-current="${j === i}" aria-label="${esc(x.title)}">${pad(j + 1)}<span> · ${esc(x.title)}</span></button>`; }).join('')}</div>
-      <p class="mono">Parte ${i + 1} de ${parts.length} · ${minutes(p)} min</p>
       <h2>${esc(p.title)}</h2>
       <p class="intro">${fmt(p.intro)}</p>
       ${p.topics.map((t) => single ? t.questions.map(field).join('') : `<section class="tp">
@@ -437,7 +432,6 @@
     const gaps = S.content.parts.map((p) => [p, partCount(p)]).filter(([, [a, n]]) => a < n);
     document.title = `Resumen · ${S.content.client}`;
     $app.innerHTML = bar() + `<main class="wrap end view">
-      <p class="mono">Resumen</p>
       <h1 class="resolve">${finished ? esc(S.content.closing.title) : done === total ? 'Todo respondido<span class="seal">.</span>' : 'Casi está<span class="seal">.</span>'}</h1>
       <p class="lede">${finished ? fmt(S.content.closing.lede) : 'Lo que quede en blanco lo vemos en persona. Cuando lo tengas, dalo por terminado.'}</p>
       <div class="stat"><span class="big">${done}</span><span class="mono">de ${total} respondidas</span></div>
