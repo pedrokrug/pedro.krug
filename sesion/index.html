@@ -604,13 +604,27 @@
       }
       return vfail('No se ha podido conectar. Vuelve a intentarlo en un momento.');
     }
-    const respondidas = allQ().filter((q) => hasAnswer(q.id)).map((q) => q.id).join(', ') || 'ninguna';
+    // what she needs to pick up where the last conversation (or the form) left off
+    const qs = allQ();
+    const real = (q) => hasAnswer(q.id) && S.answers[q.id].answer !== '·';
+    const done = qs.filter(real), open = qs.filter((q) => !real(q));
+    const short = (x, n) => { const t = String(x || '').replace(/\s+/g, ' ').trim(); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
+    const back = done.length > 0;
+    const vars = {
+      nombre: S.user.name,
+      codigo: String(store.get(CODE_KEY) || ''),
+      respondidas: done.map((q) => q.id).join(', ') || 'ninguna',
+      es_retorno: back ? 'sí' : 'no',
+      saludo: back ? `¡Hola de nuevo, ${S.user.name}! Seguimos donde lo dejamos.` : `¡Hola, ${S.user.name}! Encantada. Cuando quieras, empezamos.`,
+      resumen_previo: done.map((q) => `${q.id} (${short(plain(q.text), 70)}): ${short(S.answers[q.id].answer || S.answers[q.id].note, 180)}`).join(' | ') || 'nada todavía',
+      pendientes: open.map((q) => `${q.id} ${short(plain(q.text), 80)}`).join(' | ') || 'ninguno',
+    };
     try {
       const {Conversation} = await import(SDK);
       closing = '';
       conv = await Conversation.startSession({
         signedUrl: signed,
-        dynamicVariables: {nombre: S.user.name, codigo: String(store.get(CODE_KEY) || ''), respondidas},
+        dynamicVariables: vars,
         clientTools: {cerrar_voz: async (p) => { closing = String((p && p.motivo) || 'completa'); scheduleEnd(); }},
         onConnect: () => { mode = 'listening'; vset('vstate', 'Te escucho'); startClock(); },
         onAgentToolResponse: (p) => onToolSaved(p),
