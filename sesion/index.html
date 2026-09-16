@@ -151,15 +151,16 @@
     font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;padding:10px 16px;transition:border-color .2s}
   .stage-close:hover{border-color:#f3efe6}
   .stage-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 var(--gut);text-align:center;min-height:0;overflow:hidden}
-  .stage canvas{width:min(56vmin,46vh,480px);height:min(56vmin,46vh,480px);flex:0 0 auto;display:block;cursor:pointer;opacity:0;transform:scale(.6);
+  .stage canvas{width:min(52vmin,40vh,460px);height:min(52vmin,40vh,460px);flex:0 0 auto;display:block;cursor:pointer;opacity:0;transform:scale(.6);
     transition:opacity .9s ease .45s,transform 1.1s cubic-bezier(.2,.8,.2,1) .35s}
   .stage.open canvas{opacity:1;transform:none}
   .stage .vstate{font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#9c9384;min-height:16px;margin-top:6px;
     opacity:0;transition:opacity .6s ease .9s}
   .stage.open .vstate{opacity:1}
-  .stage .captions{width:min(100%,920px);margin-top:18px;max-height:min(11em,24vh);overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
+  .stage .captions{width:min(100%,920px);margin-top:18px;max-height:min(13em,30vh);overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end}
   .stage .captions .ai{font-size:clamp(15px,1.45vw,17px);line-height:1.5;color:#f3efe6;margin:0}
-  .stage .captions .me{color:#9c9384;font-size:14px;line-height:1.5;margin:6px 0 0}
+  .stage .captions .me{color:#9c9384;font-size:14.5px;line-height:1.5;margin:0 0 8px}
+  .stage .captions .me:not(:empty)::before{content:'Tú · ';font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#665f54}
   .stage-foot{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px var(--gut) 26px;text-align:center;background:#0c0b0a;position:relative;z-index:1}
   .stage .textlink{color:#9c9384;text-decoration-color:rgba(243,239,230,.25)}
   .stage .textlink:hover{color:#f3efe6}
@@ -545,7 +546,7 @@
       <div class="stage-mid">
         <canvas id="blob" aria-hidden="true"></canvas>
         <p class="vstate" id="vstate" aria-live="polite">${autostart ? 'Conectando' : 'Toca para empezar'}</p>
-        <div class="captions" aria-live="polite"><p class="ai" id="capAi"></p><p class="me" id="capMe"></p></div>
+        <div class="captions" aria-live="polite"><p class="me" id="capMe"></p><p class="ai" id="capAi"></p></div>
         <p class="verr" id="verr" hidden></p>
         <div id="vafter"></div>
       </div>
@@ -623,7 +624,8 @@
           const who = (m && (m.source || m.role)) || '';
           const text = (m && m.message) || '';
           if (!text) return;
-          if (who === 'user') vset('capMe', text); else { vset('capAi', text); vset('capMe', ''); }
+          // your last line stays above her reply until you speak again, so you can read what she heard
+          if (who === 'user') { vset('capMe', text); vset('capAi', ''); } else vset('capAi', text);
         },
       });
     } catch {
