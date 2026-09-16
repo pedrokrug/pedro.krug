@@ -122,6 +122,27 @@
   .meter i{position:absolute;inset:0 auto 0 0;background:var(--seal);display:block}
   .cta{margin-top:clamp(28px,5vh,44px);display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 
+  /* ============ VOICE ============ */
+  .voice{text-align:center;max-width:680px}
+  .voice h1{font-size:clamp(40px,6vw,76px);line-height:.9;letter-spacing:-.04em;margin:0 0 14px}
+  .voice .tip{color:var(--dim);font-size:15.5px;max-width:48ch;margin:0 auto}
+  .orb{--lvl:0;position:relative;width:clamp(168px,34vw,220px);aspect-ratio:1;margin:clamp(34px,6vh,54px) auto 22px;border-radius:50%;
+    border:1px solid var(--line-2);display:grid;place-items:center;background:var(--field);transition:border-color .3s,background .3s}
+  .orb::before{content:'';position:absolute;inset:-14px;border-radius:50%;border:2px solid var(--seal);opacity:calc(.12 + var(--lvl) * .7);
+    transform:scale(calc(1 + var(--lvl) * .12));transition:transform .08s linear,opacity .08s linear}
+  .orb img{width:34%;height:auto;opacity:.9}
+  .orb[data-mode="speaking"]{border-color:var(--seal);background:var(--field-2)}
+  .orb[data-mode="idle"]::before{opacity:.12;transform:none;animation:breathe 3.2s ease-in-out infinite}
+  @keyframes breathe{50%{transform:scale(1.05);opacity:.3}}
+  @media(prefers-reduced-motion:reduce){.orb::before{transition:none;animation:none!important}}
+  .vstate{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);min-height:16px}
+  .captions{min-height:110px;margin:22px auto 0;max-width:56ch}
+  .captions .ai{font-size:clamp(17px,1.9vw,20px);line-height:1.45}
+  .captions .me{color:var(--dim);font-size:15px;margin-top:10px}
+  .voice .cta{justify-content:center}
+  .micnote{color:var(--faint);font-size:13px;margin-top:18px}
+  .verr{color:var(--seal);font-size:14.5px;margin-top:16px}
+
   /* ============ PART SCREEN ============ */
   .steps{display:flex;gap:6px;margin:0 0 26px}
   .steps button{flex:1;appearance:none;border:0;background:none;padding:8px 0 0;cursor:pointer;text-align:left;border-top:2px solid var(--line);
@@ -267,6 +288,8 @@
       const i = S.content.parts.findIndex((x) => x.id === m[1]);
       if (i >= 0) { store.set('pk_sesion_last_' + S.user.id, S.content.parts[i].id); return renderPart(i); }
     }
+    if (h !== '#/voz') endVoice('nav');
+    if (h === '#/voz' && voiceOn()) return renderVoice();
     if (h === '#/fin') return renderEnd();
     renderWelcome();
   }
@@ -354,7 +377,9 @@
       <p class="lede">${fmt(w.lede)}</p>
       <div class="how">${w.how.map((h) => `<p><span>${fmt(h)}</span></p>`).join('')}</div>
       <div class="cta">
-        <button class="btn" data-go="${start}">${started ? 'Seguir' : 'Empezar'} <span class="ar">→</span></button>
+        ${voiceOn() ? `<button class="btn" data-voice>${esc(w.voiceCta || 'Empezar a hablar')} <span class="ar">●</span></button>
+        <button class="btn ghost" data-go="${start}">${started ? 'Seguir por escrito' : esc(w.formCta || 'Prefiero escribir')}</button>`
+        : `<button class="btn" data-go="${start}">${started ? 'Seguir' : 'Empezar'} <span class="ar">→</span></button>`}
         ${started ? '<button class="btn ghost" data-end>Resumen</button>' : ''}
       </div>
       <nav class="parts" aria-label="Partes">
@@ -371,7 +396,9 @@
   function wireNav() {
     $app.querySelectorAll('[data-go]').forEach((b) => b.onclick = () => go('#/p/' + b.dataset.go));
     $app.querySelectorAll('[data-end]').forEach((b) => b.onclick = () => go('#/fin'));
+    $app.querySelectorAll('[data-voice]').forEach((b) => b.onclick = () => go('#/voz'));
   }
+  const voiceOn = () => S.user.voice !== false && !store.get('pk_sesion_novoice_' + S.user.id);
 
   // ---------------------------------------------------------------- part screen
   function opts(q, list, a) {
@@ -454,6 +481,138 @@
         renderEnd();
       } catch { f.disabled = false; toast('No se ha podido enviar. Vuelve a intentarlo.'); }
     };
+  }
+
+  // ---------------------------------------------------------------- voice
+  // A live conversation with the ElevenLabs agent. n8n checks the code and hands back a
+  // short-lived private session URL; the agent saves answers through the same webhook.
+  const SDK = 'https://cdn.jsdelivr.net/npm/@elevenlabs/client@1.25.0/+esm';
+  let conv = null, closing = '', endTimer = null, meter = 0, lastMode = 'listening';
+
+  function renderVoice() {
+    const v = S.content.voice || {};
+    document.title = `${v.title || 'Hablando'} · ${S.content.client}`;
+    $app.innerHTML = bar() + `<main class="wrap voice view">
+      <h1 class="resolve">${esc(v.title || 'Cuéntamelo hablando')}</h1>
+      <p class="tip">${fmt(v.tip || '')}</p>
+      <div class="orb" id="orb" data-mode="idle"><img src="/sesion/pk.svg" alt=""></div>
+      <p class="vstate" id="vstate" aria-live="polite">Cuando quieras</p>
+      <div class="captions" aria-live="polite"><p class="ai" id="capAi"></p><p class="me" id="capMe"></p></div>
+      <div class="cta">
+        <button class="btn" id="vbtn">Empezar <span class="ar">●</span></button>
+        <button class="btn ghost" data-go="${S.content.parts[0].id}">${esc(S.content.welcome.formCta || 'Prefiero escribir')}</button>
+      </div>
+      <p class="micnote">${fmt(v.micNote || '')}</p>
+      <p class="verr" id="verr" hidden></p>
+    </main>`;
+    wireBar();
+    wireNav();
+    document.getElementById('vbtn').onclick = () => (conv ? endVoice('user') : startVoice());
+  }
+  const vset = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+  function vfail(msg) {
+    const e = document.getElementById('verr'); if (e) { e.textContent = msg; e.hidden = false; }
+    vset('vstate', 'Cuando quieras');
+    const b = document.getElementById('vbtn'); if (b) { b.disabled = false; b.innerHTML = 'Volver a intentar <span class="ar">●</span>'; }
+  }
+
+  async function startVoice() {
+    const b = document.getElementById('vbtn'); b.disabled = true;
+    document.getElementById('verr').hidden = true;
+    vset('vstate', 'Conectando');
+    try {
+      await navigator.mediaDevices.getUserMedia({audio: true});
+    } catch {
+      return vfail('Sin permiso para el micrófono no puedo escucharte. Actívalo en el navegador o sigue por escrito.');
+    }
+    let signed;
+    try {
+      signed = (await api('voice')).signed_url;
+    } catch (e) {
+      if (e.status === 403) { store.set('pk_sesion_novoice_' + S.user.id, true); S.user.voice = false; toast('La conversación de voz no está disponible. Puedes seguir por escrito.'); return go('#/p/' + S.content.parts[0].id); }
+      return vfail('No se ha podido conectar. Vuelve a intentarlo en un momento.');
+    }
+    const respondidas = allQ().filter((q) => hasAnswer(q.id)).map((q) => q.id).join(', ') || 'ninguna';
+    try {
+      const {Conversation} = await import(SDK);
+      closing = '';
+      conv = await Conversation.startSession({
+        signedUrl: signed,
+        dynamicVariables: {nombre: S.user.name, codigo: String(store.get(CODE_KEY) || ''), respondidas},
+        clientTools: {cerrar_voz: async (p) => { closing = String((p && p.motivo) || 'completa'); scheduleEnd(); }},
+        onConnect: () => { vset('vstate', 'Te escucho'); const x = document.getElementById('vbtn'); if (x) { x.disabled = false; x.innerHTML = 'Terminar <span class="ar">■</span>'; } animate(); },
+        onDisconnect: () => onVoiceEnd(),
+        onError: () => vfail('La conexión se ha cortado. Lo que dijiste ya está guardado.'),
+        onModeChange: (m) => {
+          lastMode = (m && m.mode) || 'listening';
+          const o = document.getElementById('orb'); if (o) o.dataset.mode = lastMode;
+          vset('vstate', lastMode === 'speaking' ? 'Hablando' : 'Te escucho');
+        },
+        onMessage: (m) => {
+          const who = (m && (m.source || m.role)) || '';
+          const text = (m && m.message) || '';
+          if (!text) return;
+          if (who === 'user') { vset('capMe', text); } else { vset('capAi', text); vset('capMe', ''); }
+        },
+      });
+    } catch {
+      conv = null;
+      vfail('No se ha podido iniciar la conversación. Vuelve a intentarlo o sigue por escrito.');
+    }
+  }
+
+  // let the goodbye finish before hanging up
+  function scheduleEnd() {
+    clearTimeout(endTimer);
+    const t0 = Date.now();
+    const tick = () => {
+      if (!conv) return;
+      if ((lastMode !== 'speaking' && Date.now() - t0 > 1200) || Date.now() - t0 > 9000) return endVoice('agent');
+      endTimer = setTimeout(tick, 300);
+    };
+    endTimer = setTimeout(tick, 600);
+  }
+  function endVoice() {
+    if (!conv) return;
+    try { conv.endSession(); } catch {}
+  }
+  function animate() {
+    cancelAnimationFrame(meter);
+    const step = () => {
+      const o = document.getElementById('orb');
+      if (!conv || !o) return;
+      let lvl = 0;
+      try { lvl = lastMode === 'speaking' ? conv.getOutputVolume() : conv.getInputVolume(); } catch {}
+      o.style.setProperty('--lvl', Math.min(1, lvl * 1.6).toFixed(3));
+      meter = requestAnimationFrame(step);
+    };
+    meter = requestAnimationFrame(step);
+  }
+  async function onVoiceEnd() {
+    const c = conv; conv = null;
+    cancelAnimationFrame(meter); clearTimeout(endTimer);
+    let id = ''; try { id = c && c.getId(); } catch {}
+    if (id) api('voiceEnd', {conversation_id: id}, {keepalive: true}).catch(() => {});
+    try { const fresh = await api('state'); S.answers = fresh.answers || {}; S.status = fresh.status; S.user = fresh.user; } catch {}
+    if (closing === 'conducta') {
+      store.set('pk_sesion_novoice_' + S.user.id, true);
+      toast('La conversación de voz se ha cerrado. Puedes seguir por escrito.');
+      return go('#/p/' + S.content.parts[0].id);
+    }
+    if (location.hash !== '#/voz') return;
+    const main = document.querySelector('.voice');
+    if (!main) return;
+    const done = answeredCount(), total = allQ().length;
+    main.innerHTML = `<h1 class="resolve">Gracias<span class="seal">.</span></h1>
+      <p class="tip">Lo que has contado ya está guardado${done ? `: ${done} de ${total} temas con respuesta` : ''}. Puedes repasarlo o completar lo que falte por escrito.</p>
+      <div class="cta" style="margin-top:34px">
+        <button class="btn" data-end>Ver resumen <span class="ar">→</span></button>
+        <button class="btn ghost" data-go="${S.content.parts[0].id}">Repasar por escrito</button>
+        <button class="btn ghost" data-voice-again>Seguir hablando</button>
+      </div>`;
+    refreshCounts();
+    wireNav();
+    const again = main.querySelector('[data-voice-again]'); if (again) again.onclick = () => renderVoice();
   }
 
   // ---------------------------------------------------------------- saving
