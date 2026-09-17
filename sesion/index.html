@@ -658,7 +658,7 @@
       for (const {t, qs} of pending) {
         if (t.context) out.push(`Contexto de "${t.title}"${t.key ? ' (clave)' : ''}: ${plain(t.context)}`);
         for (const q of qs) {
-          let line = `- [${q.id}] ${plain(q.text)}${t.key ? ' (clave)' : ''}`;
+          let line = `- [${q.id}] ${plain(q.voz || q.text)}${t.key ? ' (clave)' : ''}`;
           if (q.options) line += `\n  Opciones para guardar: ${q.options.join(' | ')}`;
           if (q.hint) line += `\n  Pista: ${plain(q.hint)}`;
           if (q.bridge) line += `\n  Enlace (orientación interna, no la leas): ${q.bridge}`;
